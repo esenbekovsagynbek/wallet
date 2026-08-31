@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google Wallet Demo</title>
+<style>
+  body {
+    font-family: -apple-system, "Segoe UI", Arial, sans-serif;
+    max-width: 480px;
+    margin: 64px auto;
+    text-align: center;
+    color: #1f1f1f;
+  }
+  p { color: #444; line-height: 1.5; }
+  #addToWallet {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #111;
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+  }
+  #addToWallet:hover { background: #333; }
+  #status {
+    margin-top: 16px;
+    font-size: 14px;
+    color: #b00020;
+    min-height: 1.2em;
+  }
+</style>
+</head>
+<body>
+  <h2>Add to Google Wallet Demo</h2>
+  <p>Clicking the button asks the server to sign a loyalty pass JWT, then redirects to Google's save-to-wallet flow.</p>
+  <a href="#" id="addToWallet">Add to Google Wallet</a>
+  <div id="status"></div>
+
+  <script>
+    document.getElementById('addToWallet').addEventListener('click', async (e) => {
+      e.preventDefault();
+      const status = document.getElementById('status');
+      status.style.color = '#444';
+      status.textContent = 'Generating pass...';
+      try {
+        const res = await fetch('/api/wallet/pass-jwt?name=Jane+Doe&memberId=000123&points=150');
+        const data = await res.json();
+        if (data.error) {
+          status.style.color = '#b00020';
+          status.textContent = 'Error: ' + data.error;
+          return;
+        }
+        window.location.href = data.saveUrl;
+      } catch (err) {
+        status.style.color = '#b00020';
+        status.textContent = 'Request failed: ' + err.message;
+      }
+    });
+  </script>
+</body>
+</html>
