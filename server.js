@@ -15,6 +15,15 @@ const CLASS_SUFFIX = 'demo_loyalty_class';
 const ISSUER_NAME = process.env.GOOGLE_WALLET_ISSUER_NAME;
 const PROGRAM_NAME = process.env.GOOGLE_WALLET_PROGRAM_NAME || 'Demo Rewards';
 const LOGO_URL = process.env.GOOGLE_WALLET_LOGO_URL;
+const CORS_ORIGIN = process.env.CORS_ORIGIN;
+
+app.use((req, res, next) => {
+  if (CORS_ORIGIN) {
+    res.setHeader('Access-Control-Allow-Origin', CORS_ORIGIN);
+    res.setHeader('Vary', 'Origin');
+  }
+  next();
+});
 
 app.use(express.static(path.join(__dirname, 'public')));
 
